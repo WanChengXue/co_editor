@@ -1,8 +1,11 @@
 # co_editor
 # 技术栈
-- 前端采用svelte + yjs
+- 前端采用svelte + yjs / blocky(Block)
 - 后端使用了phoenix
 - 数据库暂时使用了postgresql
+- REPL(kernel): 
+  - CRDT Analyser：loom / delta_crdt_ex / drax; (elixir)
+- LLM Support: Elixir LangChain / Task weaver
 
 # 前端页面
 <img src="./img/frontend_page.png">，demo中设计了三个页面：
@@ -15,3 +18,6 @@
 用户编辑文档页面的操作：
 - 字符输入操作，特指键入的字符
 - 用户采用`/table, /img`可以导入文本，图片（当然可以拓展到audio，href数据）
+
+LLM支持：
+- 用户采用`/ai`可以与LLM进行交互，交互内容为当前行文本数据
