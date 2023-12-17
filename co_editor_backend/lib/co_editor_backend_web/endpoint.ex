@@ -1,5 +1,6 @@
 defmodule CoEditorBackendWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :co_editor_backend
+  plug CORSPlug, origin: "*", allow_headers: ["authorization", "content-type", "x-csrf-token"], methods: [:get, :post, :patch, :delete, :options]
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -48,4 +49,6 @@ defmodule CoEditorBackendWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug CoEditorBackendWeb.Router
+
+
 end

@@ -17,7 +17,8 @@ defmodule CoEditorBackendWeb.Router do
   scope "/", CoEditorBackendWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+    post "/", PageController, :handle_post
   end
 
   # Other scopes may use custom stacks.
