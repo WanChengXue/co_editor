@@ -4,7 +4,7 @@
 - 后端使用了phoenix
 - 数据库暂时使用了postgresql
 - REPL(kernel): 
-  - CRDT Analyser：loom / delta_crdt_ex / drax; (elixir)
+  - CRDT Analyser：loom / delta_crdt_ex / drax; (Elixir)
 - LLM Support: Elixir LangChain / Task weaver
 
 # 前端页面
@@ -21,3 +21,9 @@
 
 LLM支持：
 - 用户采用`/ai`可以与LLM进行交互，交互内容为当前行文本数据
+
+# 后端
+- 通过管理webrtc room，来管理docs
+- 通过db保存旧版本docs，优先加载旧版本docs，再通过webrtc获取新版本docs
+- CRDT Analyser
+- REPL 解析前端指定handle方法，如`/table`,`/img`,`/ai`
