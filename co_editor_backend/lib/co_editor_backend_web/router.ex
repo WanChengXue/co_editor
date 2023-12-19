@@ -21,6 +21,13 @@ defmodule CoEditorBackendWeb.Router do
     post "/", PageController, :handle_post
   end
 
+  scope "/api", CoEditorBackendWeb do
+    pipe_through :api
+
+    post "/login", LoginController, :index
+
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CoEditorBackendWeb do
   #   pipe_through :api

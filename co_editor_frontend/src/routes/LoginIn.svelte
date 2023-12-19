@@ -1,10 +1,13 @@
 <script>
+    import push from 'svelte-spa-router'
     let username = "";
     let password = "";
 
     function handleLogin() {
         // mock返回结果
-        console.log("mock");
+        console.log("mock")
+        location.hash = '/home'
+        
     }
 </script>
 

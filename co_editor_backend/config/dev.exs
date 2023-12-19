@@ -2,12 +2,7 @@ import Config
 
 # Configure your database
 config :co_editor_backend, CoEditorBackend.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "co_editor_backend_dev",
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
+  database: "./database.sqlite",
   pool_size: 10
 
 # For development, we disable any cache and enable
