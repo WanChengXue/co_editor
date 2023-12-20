@@ -17,6 +17,11 @@ defmodule CoEditorBackendWeb.ItemController do
         # 这个是post请求，用来处理文档创建
         %CoEditorBackend.Room{"doc_name": docname, "doc_room": docroom}
         |> CoEditorBackend.Repo.insert()
+
+        # 同时给doc数据库增加一条数据
+        %CoEditorBackend.Doc{"doc_name": docname, "room_name": docroom, "doc_content": "Untitled"}
+        |> CoEditorBackend.Repo.insert()
+
         response = %{status: true}
         conn
         |> put_status(:ok)
@@ -25,20 +30,38 @@ defmodule CoEditorBackendWeb.ItemController do
 
 
     def show(conn, %{"id" => id}) do
-    # 查找某个doc的具体内容
-        response = %{status: true}
-        conn 
-        |> put_status(:ok)
-        |> json(response)
+        case CoEditorBackend.Repo.get(CoEditorBackend.Doc, id) do
+            nil ->
+            response = %{status: "error", message: "不存在该id的文档"}
+            conn
+            |> put_status(:not_found)
+            |> json(response)
+
+            doc ->
+            response = %{status: "success", doc_content: doc.doc_content}
+            conn
+            |> put_status(:ok)
+            |> json(response)
+        end
     end
 
 
-    def update(conn, %{"id" => id, "doccontent" => doccontent, "docname" => docnanme, "docroom" => docroom}) do
-        # 将文档的内容覆盖回去
-        response = %{status: "success"}
-        conn
-        |> put_status(:ok)
-        |> json(response)
+    def update(conn, %{"id" => id, "doccontent" => doccontent, "docname" => docname, "docroom" => docroom}) do
+        case CoEditorBackend.Repo.get_by(CoEditorBackend.Doc, doc_name: docname, room_name: docroom) do
+            nil ->
+                response = %{status: "error", message: "未找到满足条件的文档"}
+                conn
+                |> put_status(:not_found)
+                |> json(response)
 
+            doc ->
+                updated_doc = %CoEditorBackend.Doc{doc | doc_content: doccontent}
+                {:ok, _} = CoEditorBackend.Repo.update(updated_doc)
+                
+                response = %{status: "success"}
+                conn
+                |> put_status(:ok)
+                |> json(response)
+        end
     end
 end

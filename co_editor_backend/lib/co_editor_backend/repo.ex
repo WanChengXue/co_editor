@@ -23,3 +23,15 @@ defmodule CoEditorBackend.Room do
         field :doc_room, :string
     end
 end
+
+
+defmodule CoEditorBackend.Doc do
+    use Ecto.Schema
+
+    schema "doc" do
+        field :doc_name, :string
+        field :room_name, :string
+        field :doc_content, :string
+    end
+
+end

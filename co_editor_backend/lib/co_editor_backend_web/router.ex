@@ -14,13 +14,6 @@ defmodule CoEditorBackendWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/", CoEditorBackendWeb do
-  #   pipe_through :browser
-
-  #   # get "/", PageController, :home
-  #   post "/", PageController, :handle_post
-  # end
-
   scope "/api", CoEditorBackendWeb do
     pipe_through :api
 
