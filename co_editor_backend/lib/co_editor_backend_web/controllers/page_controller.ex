@@ -1,13 +1,7 @@
 defmodule CoEditorBackendWeb.PageController do
   use CoEditorBackendWeb, :controller
 
-  def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
-  end
 
-  # TODO: [debug] ** (Plug.CSRFProtection.InvalidCSRFTokenError) invalid CSRF (Cross Site Request Forgery) token
   def handle_post(conn, _params) do
     case Plug.Conn.read_body(conn) do
       {:ok, body, _conn} ->

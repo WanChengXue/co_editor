@@ -26,14 +26,15 @@ defmodule CoEditorBackendWeb.Router do
 
     get "/login", LoginController, :index
 
+    get "/item", ItemController, :index
+    post "/item", ItemController, :create
+
+
+    post "/page", PageController, :handle_post
+    
+
   end
 
-
-  scope "/api", CoEditorBackedWeb do
-    pipe_through :api
-
-    resources "/item", ItemController, only: [:index, :create, :delete]
-  end
 
   # Other scopes may use custom stacks.
   # scope "/api", CoEditorBackendWeb do
