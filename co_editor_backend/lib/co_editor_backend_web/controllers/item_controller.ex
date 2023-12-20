@@ -23,4 +23,22 @@ defmodule CoEditorBackendWeb.ItemController do
         |> json(response)
     end
 
+
+    def show(conn, %{"id" => id}) do
+    # 查找某个doc的具体内容
+        response = %{status: true}
+        conn 
+        |> put_status(:ok)
+        |> json(response)
+    end
+
+
+    def update(conn, %{"id" => id, "doccontent" => doccontent, "docname" => docnanme, "docroom" => docroom}) do
+        # 将文档的内容覆盖回去
+        response = %{status: "success"}
+        conn
+        |> put_status(:ok)
+        |> json(response)
+
+    end
 end

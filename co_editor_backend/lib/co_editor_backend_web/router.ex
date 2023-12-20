@@ -28,9 +28,8 @@ defmodule CoEditorBackendWeb.Router do
 
     get "/item", ItemController, :index
     post "/item", ItemController, :create
-
-
-    post "/page", PageController, :handle_post
+    get "/item/:id", ItemController, :show
+    patch "/item/:id", ItemController, :update
     
 
   end

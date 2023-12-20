@@ -2,7 +2,8 @@ defmodule CoEditorBackendWeb.PageController do
   use CoEditorBackendWeb, :controller
 
 
-  def handle_post(conn, _params) do
+  def handle_post(conn, %{"docname" => docname, "docroom" => docroom, "doccontent"=>doccontent}) do
+    
     case Plug.Conn.read_body(conn) do
       {:ok, body, _conn} ->
         case Jason.decode(body) do
