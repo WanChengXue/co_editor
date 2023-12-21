@@ -11,8 +11,8 @@
 
   function editButtonClick(event, doc) {
     event.preventDefault();
-    console.log(`Edit clicked for ${doc.id}`);
-    location.href = `/#/doc?id=${doc.id}`;
+    console.log(`Edit clicked for ${doc.doc_room}`);
+    location.href = `/#/doc?id=${doc.id}&docname=${doc.doc_name}&roomname=${doc.doc_room}`;
     location.reload();
   }
 
@@ -38,7 +38,7 @@
 <main>
   <html lang="en"
     ><head>
-      <link rel="stylesheet" href="/public/dist/css/tabler.css" />
+      <link rel="stylesheet" href="/dist/css/tabler.css" />
     </head>
     <body>
       <script src="./dist/js/demo-theme.min.js?1695847769"></script>
@@ -93,7 +93,7 @@
           </div>
         </div>
       </div>
-      <script src="/public/dist/js/tabler.js"></script>
+      <script src="/dist/js/tabler.js"></script>
     </body></html
   >
 </main>
