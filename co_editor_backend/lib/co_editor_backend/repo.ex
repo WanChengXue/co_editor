@@ -30,8 +30,13 @@ defmodule CoEditorBackend.Doc do
 
     schema "doc" do
         field :doc_name, :string
-        field :room_name, :string
+        field :doc_room, :string
         field :doc_content, :string
+    end
+
+    def changeset(item, params \\ %{}) do
+        item
+        |> Ecto.Changeset.cast(params, [:doc_content])
     end
 
 end

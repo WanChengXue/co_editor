@@ -4,11 +4,11 @@ defmodule CoEditorBackendWeb.ItemController do
 
     def index(conn, %{"username" => username, "token" => token}) do
         # 这个函数返回的是所有的doc名字
-        total_doc_table = 
-            CoEditorBackend.Repo.all(CoEditorBackend.Room) 
+        total_doc_table =
+            CoEditorBackend.Repo.all(CoEditorBackend.Room)
             |> Enum.map(fn room -> %{id: room.id, doc_name: room.doc_name, doc_room: room.doc_room} end)
         response = %{status: true, data: total_doc_table}
-        conn 
+        conn
         |> put_status(:ok)
         |> json(response)
     end
@@ -19,7 +19,7 @@ defmodule CoEditorBackendWeb.ItemController do
         |> CoEditorBackend.Repo.insert()
 
         # 同时给doc数据库增加一条数据
-        %CoEditorBackend.Doc{"doc_name": docname, "room_name": docroom, "doc_content": "Untitled"}
+        %CoEditorBackend.Doc{"doc_name": docname, "doc_room": docroom, "doc_content": "Untitled"}
         |> CoEditorBackend.Repo.insert()
 
         response = %{status: true}
@@ -47,7 +47,7 @@ defmodule CoEditorBackendWeb.ItemController do
 
 
     def update(conn, %{"id" => id, "doccontent" => doccontent, "docname" => docname, "docroom" => docroom}) do
-        case CoEditorBackend.Repo.get_by(CoEditorBackend.Doc, doc_name: docname, room_name: docroom) do
+        case CoEditorBackend.Repo.get_by(CoEditorBackend.Doc, doc_name: docname, doc_room: docroom) do
             nil ->
                 response = %{status: "error", message: "未找到满足条件的文档"}
                 conn
@@ -55,13 +55,20 @@ defmodule CoEditorBackendWeb.ItemController do
                 |> json(response)
 
             doc ->
-                updated_doc = %CoEditorBackend.Doc{doc | doc_content: doccontent}
-                {:ok, _} = CoEditorBackend.Repo.update(updated_doc)
-                
-                response = %{status: "success"}
-                conn
-                |> put_status(:ok)
-                |> json(response)
+                changeset = CoEditorBackend.Doc.changeset(doc, %{doc_content: doccontent, doc_name: docname, doc_room: docroom})
+                case CoEditorBackend.Repo.update(changeset) do
+                    {:ok, _updated_doc} ->
+                        response = %{status: "success"}
+                        conn
+                        |> put_status(:ok)
+                        |> json(response)
+
+                    {:error, changeset} ->
+                        response = %{status: "error", message: "更新文档失败", errors: changeset.errors}
+                        conn
+                        |> put_status(:unprocessable_entity)
+                        |> json(response)
+                end
         end
     end
 end
