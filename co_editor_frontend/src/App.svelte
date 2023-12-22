@@ -7,7 +7,7 @@
     export const routes = {
       "/": LoginIn,
       "/home": Home,
-      "/doc": Doc
+      "/doc/:id/:docname/:docroom": Doc
     };
   </script>
   

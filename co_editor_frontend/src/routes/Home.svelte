@@ -12,8 +12,7 @@
   function editButtonClick(event, doc) {
     event.preventDefault();
     console.log(`Edit clicked for ${doc.doc_room}`);
-    location.href = `/#/doc?id=${doc.id}&docname=${doc.doc_name}&roomname=${doc.doc_room}`;
-    location.reload();
+    location.href = `/#/doc/${doc.id}/${doc.doc_name}/${doc.doc_room}`;
   }
 
   async function fetchData() {
@@ -29,6 +28,7 @@
       console.error(error);
     }
   }
+
 
   onMount(() => {
     fetchData();
