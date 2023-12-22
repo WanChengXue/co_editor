@@ -5,7 +5,7 @@ defmodule CoEditorBackendWeb.ItemController do
     def index(conn, %{"username" => username, "token" => token}) do
         # 这个函数返回的是所有的doc名字
         total_doc_table =
-            CoEditorBackend.Repo.all(CoEditorBackend.Room)
+            CoEditorBackend.Repo.all(CoEditorBackend.Doc)
             |> Enum.map(fn room -> %{id: room.id, doc_name: room.doc_name, doc_room: room.doc_room} end)
         response = %{status: true, data: total_doc_table}
         conn
@@ -14,12 +14,9 @@ defmodule CoEditorBackendWeb.ItemController do
     end
 
     def create(conn, %{"docname" => docname, "docroom" => docroom}) do
-        # 这个是post请求，用来处理文档创建
-        %CoEditorBackend.Room{"doc_name": docname, "doc_room": docroom}
-        |> CoEditorBackend.Repo.insert()
-
-        # 同时给doc数据库增加一条数据
-        %CoEditorBackend.Doc{"doc_name": docname, "doc_room": docroom, "doc_content": "Untitled"}
+        # TODO: doc_room 不能重复
+        # 给doc数据库增加一条数据
+        %CoEditorBackend.Doc{"doc_name": docname, "doc_room": docroom, "doc_content": ""}
         |> CoEditorBackend.Repo.insert()
 
         response = %{status: true}
@@ -47,7 +44,7 @@ defmodule CoEditorBackendWeb.ItemController do
 
 
     def update(conn, %{"id" => id, "doccontent" => doccontent, "docname" => docname, "docroom" => docroom}) do
-        case CoEditorBackend.Repo.get_by(CoEditorBackend.Doc, doc_name: docname, doc_room: docroom) do
+        case CoEditorBackend.Repo.get_by(CoEditorBackend.Doc, id: id) do
             nil ->
                 response = %{status: "error", message: "未找到满足条件的文档"}
                 conn
