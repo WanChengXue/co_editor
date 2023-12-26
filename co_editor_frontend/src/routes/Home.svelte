@@ -64,6 +64,9 @@
     provider = new WebrtcProvider(
       "9a1c2b0b42196c3e24ca742593e26b29221915adc239fb158ebb4cd43d0b32c1",
       ydoc,
+      {
+        signaling: ["wss://y-webrtc-ckynwnzncc.now.sh", "ws://localhost:4444"],
+      },
     );
     docData = [];
     mapDB = ydoc.getMap("mapDB");
