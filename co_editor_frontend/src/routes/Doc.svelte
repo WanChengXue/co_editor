@@ -82,11 +82,13 @@
       quill = null; // 重置 quill 变量
     }
   }
-// masterRoom : {{id: doc.id, doc_room: doc_room}}
+  // masterRoom : {{id: doc.id, doc_room: doc_room}}
   onMount(() => {
     //  TODO: webrtc广播后 ，若当前网络仅有当前节点，则 doc_content 为最新数据
     ydoc = new Y.Doc();
-    provider = new WebrtcProvider(docroom, ydoc);
+    provider = new WebrtcProvider(docroom, ydoc, {
+      signaling: ["wss://y-webrtc-ckynwnzncc.now.sh", "ws://localhost:4444"],
+    });
     type = ydoc.getText("quill");
 
     // @ts-ignore
@@ -107,7 +109,7 @@
     });
 
     binding = new QuillBinding(type, quill, provider.awareness);
-    
+
     // TODO: REPL 时 获取doc实时变更信息
     // // All of our network providers implement the awareness crdt
     // const awareness = provider.awareness;
