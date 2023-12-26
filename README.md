@@ -4,8 +4,8 @@
 - 后端使用了phoenix
 - 数据库暂时使用了postgresql
 - REPL(kernel): 
-  - CRDT Analyser：loom / delta_crdt_ex / drax; (Elixir)
-- LLM Support: Elixir LangChain / Task weaver
+  - CRDT Analyser：[loom](https://github.com/asonge/loom) / [delta_crdt_ex](https://github.com/derekkraan/delta_crdt_ex?tab=readme-ov-file) / [drax](https://github.com/keathley/drax)
+- LLM Support: [Elixir LangChain](https://github.com/brainlid/langchain) / [Task weaver](https://github.com/microsoft/TaskWeaver)
 
 # 前端页面
 <img src="./img/frontend_page.png">，demo中设计了三个页面：
