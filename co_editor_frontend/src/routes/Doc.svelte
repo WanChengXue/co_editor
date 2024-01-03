@@ -24,22 +24,22 @@
   let ydoc;
   let type;
 
-  async function sendPostRequest(data) {
+  async function replRequest(doccontent) {
     try {
+      // 新建文档请求
+      const data = {
+        doccontent: doccontent,
+      };
       console.log(data);
-      const response = await fetch("http://127.0.0.1:4000", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        console.log("POST request successful");
-      } else {
-        console.log("POST request failed");
-      }
+      await axios
+        .post("http://localhost:4000/api/REPL/" + id, data)
+        .then((response) => {
+          // TODO: 仅仅获取最新一个item而不是整个列表
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
@@ -86,9 +86,7 @@
   onMount(() => {
     //  TODO: webrtc广播后 ，若当前网络仅有当前节点，则 doc_content 为最新数据
     ydoc = new Y.Doc();
-    provider = new WebrtcProvider(docroom, ydoc, {
-      signaling: ["wss://y-webrtc-ckynwnzncc.now.sh", "ws://localhost:4444"],
-    });
+    provider = new WebrtcProvider(docroom, ydoc);
     type = ydoc.getText("quill");
 
     // @ts-ignore
@@ -111,18 +109,13 @@
     binding = new QuillBinding(type, quill, provider.awareness);
 
     // TODO: REPL 时 获取doc实时变更信息
-    // // All of our network providers implement the awareness crdt
-    // const awareness = provider.awareness;
+    // All of our network providers implement the awareness crdt
+    const awareness = provider.awareness;
 
-    // // You can observe when a user updates their awareness information
-    // awareness.on("change", (changes) => {
-    //   // Whenever somebody updates their awareness information,
-    //   // we log all awareness information from all users.
-    //   const states = Array.from(awareness.getStates().values());
-    //   // console.log(provider.getText());
-    //   console.log(provider.maxConns);
-    //   // sendPostRequest(quill.getText());
-    // });
+    awareness.on("change", (changes) => {
+      const states = Array.from(awareness.getStates().values());
+      replRequest(quill.getText());
+    });
 
     // // You can think of your own awareness information as a key-value store.
     // // We update our "user" field to propagate relevant user information.
