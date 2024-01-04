@@ -125,6 +125,7 @@
     //   // Define a color that should be associated to the user:
     //   color: "#ffb61e", // should be a hex color
     // });
+    // /ai string 
   });
 
   onDestroy(() => {
@@ -132,6 +133,3 @@
   });
 </script>
 
-<main>
-  <div bind:this={editorElement}></div>
-</main>

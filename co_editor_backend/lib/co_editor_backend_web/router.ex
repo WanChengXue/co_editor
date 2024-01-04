@@ -31,6 +31,11 @@ defmodule CoEditorBackendWeb.Router do
   end
 
 
+  scope "/api/rich_text", CoEditorBackendWeb do
+    pipe_through :api
+    post "/ai", RichTextController, :ai
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CoEditorBackendWeb do
   #   pipe_through :api

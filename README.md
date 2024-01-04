@@ -27,3 +27,6 @@ LLM支持：
 - 通过db保存旧版本docs，优先加载旧版本docs，再通过webrtc获取新版本docs
 - CRDT Analyser
 - REPL 解析前端指定handle方法，如`/table`,`/img`,`/ai`
+
+## `/ai`后端处理逻辑
+<img src="./img/ai_call.png">
