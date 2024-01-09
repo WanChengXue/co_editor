@@ -1,5 +1,6 @@
 <script>
   import { onDestroy, onMount } from "svelte";
+  import { SHA256 } from "crypto-js";
 
   import * as Y from "yjs";
   import { WebrtcProvider } from "y-webrtc";
@@ -33,18 +34,56 @@
     }
   }
 
-  function newDocButtonClick(event) {
-    event.preventDefault();
-    console.log("new doc clicked!");
-  }
-
   function editButtonClick(event, doc) {
     event.preventDefault();
     console.log(`Edit clicked for ${doc.doc_room}`);
     location.href = `/#/doc/${doc.id}/${doc.doc_name}/${doc.doc_room}`;
   }
 
-  async function fetchData() {
+  function saveDocButtonClick(event) {
+    var inputElement = document.getElementById("docname");
+    // @ts-ignore
+    var docName = inputElement.value;
+
+    // TODO: save to DB
+    newDocRequest(docName);
+    // TODO: P2P 存储 doc list
+    // let tmpDocData = [];
+    // mapDB = ydoc.getMap("mapDB");
+    // const docObject = new Doc(mapDB.size, docName, "john@example.com");
+    // mapDB.set(mapDB.size, JSON.stringify(docObject));
+    // // 本地修改
+    // mapDB.forEach((value, id, mapDB) => {
+    //   console.log(value);
+    //   const elementDoc = JSON.parse(value);
+    //   tmpDocData.push(elementDoc);
+    // });
+    // // 广播修改
+    // ydoc.transact(() => {
+    //   mapDB.set(mapDB.size, JSON.stringify(docObject));
+    // });
+    // docData = tmpDocData;
+  }
+
+  async function newDocRequest(docName) {
+    // 新建文档请求
+    const data = {
+      docname: docName,
+      docroom: SHA256(docName).toString(),
+    };
+    await axios
+      .post("http://localhost:4000/api/item", data)
+      .then((response) => {
+        // TODO: 仅仅获取最新一个item而不是整个列表
+        fetchDocListRequest();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async function fetchDocListRequest() {
+    // 获取文档列表请求
     try {
       const response = await axios.get("http://localhost:4000/api/item", {
         params: {
@@ -59,24 +98,43 @@
   }
 
   onMount(() => {
-    ydoc = new Y.Doc();
-    // sha256("niubi")
-    provider = new WebrtcProvider(
-      "9a1c2b0b42196c3e24ca742593e26b29221915adc239fb158ebb4cd43d0b32c1",
-      ydoc,
-      {
-        signaling: ["wss://y-webrtc-ckynwnzncc.now.sh", "ws://localhost:4444"],
-      },
-    );
-    docData = [];
-    mapDB = ydoc.getMap("mapDB");
-    const user1 = new Doc(1, "John Doe", "john@example.com");
-    mapDB.set("2", JSON.stringify(user1));
-    mapDB.forEach((value, id, mapDB) => {
-      const elementDoc = JSON.parse(value);
-      docData.push(elementDoc);
-    });
-    // fetchData();
+    fetchDocListRequest();
+
+    // TODO: P2P 存储 doc list
+    // ydoc = new Y.Doc();
+    // // sha256("niubi")
+    // provider = new WebrtcProvider(
+    //   "9a1c2b0b42196c3e24ca742593e26b29221915adc239fb158ebb4cd43d0b32c1",
+    //   ydoc,
+    // );
+    // {
+    // docData = [];
+    // mapDB = ydoc.getMap("mapDB");
+    // const docObject = new Doc(0, "John Doe", "john@example.com");
+    // mapDB.set("1", JSON.stringify(docObject));
+    // mapDB.forEach((value, id, mapDB) => {
+    //   console.log(value);
+    //   const elementDoc = JSON.parse(value);
+    //   docData.push(elementDoc);
+    // });
+
+    // All of our network providers implement the awareness crdt
+    // const awareness = provider.awareness;
+
+    // You can observe when a user updates their awareness information
+    // awareness.on("change", (changes) => {
+    //   // mapDB = ydoc.getMap("mapDB");
+    //   // const docObject = new Doc(0, "John Doe", "john@example.com");
+    //   // mapDB.set("1", JSON.stringify(docObject));
+    //   // mapDB.forEach((value, id, mapDB) => {
+    //   //   console.log(value);
+    //   //   const elementDoc = JSON.parse(value);
+    //   //   docData.push(elementDoc);
+    //   // });
+    //   // console.log("change");
+    // });
+
+    // }
   });
 </script>
 
@@ -102,7 +160,7 @@
           <!-- Page body -->
           <div class="page-body">
             <div class="container-xl">
-              <div class="row row-cards">
+              <div id="doclist" class="row row-cards">
                 <div class="col-12">
                   <div class="card">
                     <div class="table-responsive">
@@ -113,13 +171,14 @@
                           <tr>
                             <th>doc</th>
                             <th class="w-1"
-                              ><a
-                                href="#"
-                                class="btn btn-ghost-primary w-100"
-                                on:click={newDocButtonClick}
+                              ><button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
                               >
                                 New Doc
-                              </a></th
+                              </button></th
                             >
                           </tr>
                         </thead>
@@ -139,6 +198,50 @@
                         </tbody>
                       </table>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal" id="exampleModal" tabindex="-1">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">New Doc</h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Doc Name</label>
+                      <input
+                        id="docname"
+                        type="text"
+                        class="form-control"
+                        name="example-text-input"
+                        placeholder="Your doc name"
+                      />
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <a
+                      href="#"
+                      class="btn btn-link link-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Cancel
+                    </a>
+                    <a
+                      href="#"
+                      on:click={(event) => saveDocButtonClick(event)}
+                      class="btn btn-primary ms-auto"
+                      data-bs-dismiss="modal"
+                    >
+                      Create
+                    </a>
                   </div>
                 </div>
               </div>

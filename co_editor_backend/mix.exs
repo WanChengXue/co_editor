@@ -51,7 +51,12 @@ defmodule CoEditorBackend.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:redix, "~> 1.2.4"},
+      {:tesla, "~> 1.4"},
+      # optional, but recommended adapter
+      {:hackney, "~> 1.17"},
+      {:poison, "~> 3.1"},
     ]
   end
 
