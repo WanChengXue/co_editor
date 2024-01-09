@@ -56,6 +56,7 @@ defmodule CoEditorBackend.MixProject do
       {:tesla, "~> 1.4"},
       # optional, but recommended adapter
       {:hackney, "~> 1.17"},
+      {:poison, "~> 3.1"},
     ]
   end
 

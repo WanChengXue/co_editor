@@ -24,16 +24,12 @@ defmodule CoEditorBackendWeb.Router do
     get "/item/:id", ItemController, :show
     patch "/item/:id", ItemController, :update
 
-    # get "/REPL/:id/", ReplController, :index
-    post "/REPL/:id", ReplController, :content_gateway
-    # post "/item/REPL/:id", ReplController, :motion
-
   end
 
 
   scope "/api/rich_text", CoEditorBackendWeb do
     pipe_through :api
-    post "/ai", RichTextController, :ai
+    post "/ai", RichTextController, :content_gateway
   end
 
   # Other scopes may use custom stacks.
