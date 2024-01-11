@@ -3,12 +3,11 @@
 - 前端采用svelte + yjs / blocky(Block)
 - 后端使用了phoenix
 - 数据库暂时使用了postgresql
-- REPL(kernel): 
-  - CRDT Analyser：loom / delta_crdt_ex / drax; (Elixir)
-- LLM Support: Elixir LangChain / Task weaver
+- REPL
+- LLM Support: SHADOW
 
 # 前端页面
-<img src="./img/frontend_page.png">，demo中设计了三个页面：
+<img src="./docs/img/frontend_page.png">，demo中设计了三个页面：
 - 登陆页面（注册功能不是主要的，暂时在db中写死两个用户）
 - 文档的管理页面，有三个功能：
   - 右上角点击之后能够创建一个新的空白文档，
@@ -27,3 +26,18 @@ LLM支持：
 - 通过db保存旧版本docs，优先加载旧版本docs，再通过webrtc获取新版本docs
 - CRDT Analyser
 - REPL 解析前端指定handle方法，如`/table`,`/img`,`/ai`
+
+## `/ai`后端处理逻辑
+<img src="./docs/img/ai_call.png">
+
+### DB设计
+- Doc，用来存放mock数据的，包括两个字段: 
+  - `doc_name`, 文档名
+  - `doc_room`, 该文档对应的WebRTC房间编号
+  - `doc_content`, 文档内容
+
+
+# 用况图
+<img src="./docs/img/uml.png">
+
+[接口文档](/docs/api_interface.md)

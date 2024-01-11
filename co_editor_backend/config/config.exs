@@ -60,6 +60,14 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :co_editor_backend, CoEditorBackendWeb.Redis,
+  host: "localhost",
+  port: 6379,
+  password: ""
+
+System.put_env("REDIS_URL", "redis://localhost:6379/3")
+
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

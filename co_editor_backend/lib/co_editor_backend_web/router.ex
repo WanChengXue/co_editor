@@ -14,11 +14,22 @@ defmodule CoEditorBackendWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", CoEditorBackendWeb do
-    pipe_through :browser
+  scope "/api", CoEditorBackendWeb do
+    pipe_through :api
 
-    # get "/", PageController, :home
-    post "/", PageController, :handle_post
+    get "/login", LoginController, :index
+
+    get "/item", ItemController, :index
+    post "/item", ItemController, :create
+    get "/item/:id", ItemController, :show
+    patch "/item/:id", ItemController, :update
+
+  end
+
+
+  scope "/api/rich_text", CoEditorBackendWeb do
+    pipe_through :api
+    post "/ai", RichTextController, :content_gateway
   end
 
   # Other scopes may use custom stacks.

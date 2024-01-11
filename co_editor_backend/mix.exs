@@ -35,6 +35,7 @@ defmodule CoEditorBackend.MixProject do
       {:phoenix, "~> 1.7.3"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
+      {:ecto_sqlite3, "~> 0.13"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -50,7 +51,12 @@ defmodule CoEditorBackend.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:redix, "~> 1.2.4"},
+      {:tesla, "~> 1.4"},
+      # optional, but recommended adapter
+      {:hackney, "~> 1.17"},
+      {:poison, "~> 3.1"},
     ]
   end
 

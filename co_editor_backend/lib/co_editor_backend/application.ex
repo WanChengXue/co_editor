@@ -17,9 +17,10 @@ defmodule CoEditorBackend.Application do
       # Start Finch
       {Finch, name: CoEditorBackend.Finch},
       # Start the Endpoint (http/https)
-      CoEditorBackendWeb.Endpoint
+      CoEditorBackendWeb.Endpoint,
       # Start a worker by calling: CoEditorBackend.Worker.start_link(arg)
       # {CoEditorBackend.Worker, arg}
+      CoEditorBackend.AiGenSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
