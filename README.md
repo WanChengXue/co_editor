@@ -31,13 +31,15 @@ LLM支持：
 <img src="./docs/img/ai_call.png">
 
 ### DB设计
-- Doc，用来存放mock数据的，包括两个字段: 
+- Doc Table，存放Doc数据,包括3个字段: 
   - `doc_name`, 文档名
   - `doc_room`, 该文档对应的WebRTC房间编号
   - `doc_content`, 文档内容
 
 
 # 用况图
+用户在`文档列表`页面可以选择某一文档，进入`编辑文档`页面，该页面支持多个用户共同编辑同一个文档。
+在`编辑文档`页面，通过输入`/ai`，可以调用LLM生成相关内容，帮助完成编辑文档的工作。
 <img src="./docs/img/uml.png">
 
 [接口文档](/docs/api_interface.md)
