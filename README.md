@@ -29,7 +29,10 @@ LLM支持：
 
 ## `/ai`后端处理逻辑
 <img src="./docs/img/ai_call.png">
+<img src="./img/ai_call.png">，启动之后，这个部分actor之间的关系为：
 
+启动逻辑
+<img src="./img/ai_supervisor.png">
 ### DB设计
 - Doc Table，存放Doc数据,包括3个字段: 
   - `doc_name`, 文档名
