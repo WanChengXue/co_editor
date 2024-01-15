@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
 
   import * as Y from "yjs";
-  import { WebrtcProvider } from "y-webrtc";
+  import { WebrtcProvider, Room } from "y-webrtc";
   import { QuillBinding } from "y-quill";
   import Quill from "quill";
   import QuillCursors from "quill-cursors";
@@ -42,20 +42,19 @@
       );
 
       const content = response.data.replace(/\n/g, "<br>");
-      console.log(content)
       return content; // 返回 response.data[0] 或根据需要返回 response
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("request cancelled");
-      } else if (error.code === 'ECONNABORTED') {
+      } else if (error.code === "ECONNABORTED") {
         console.log("request timeout");
       } else {
-        console.log("error: " , error.message);
+        console.log("error: ", error.message);
       }
     }
   }
 
-  async function leavePageHandler() {
+  async function saveHandler() {
     var data = new FormData();
     data.append("docname", docname);
     data.append("docroom", docroom);
@@ -79,21 +78,16 @@
       });
   }
 
-  function nodeLeave() {
-    //离开当前页面等于当前节点从网络中离线, 在该时间点, 后端对doc进行一次快照
-    if (quill) {
-      // 后端保存doc content
-      leavePageHandler();
-      // 销毁 ydoc、provider
-      binding.destroy();
-      provider.disconnect();
-      ydoc.destroy();
-      quill.disable();
-      quill = null; // 重置 quill 变量
-    }
+  function handleBeforeUnload(event) {
+    // 使用默认的浏览器弹窗文本
+    // event.preventDefault();
   }
+
   // masterRoom : {{id: doc.id, doc_room: doc_room}}
   onMount(() => {
+    // 在组件挂载时添加事件监听器
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     //  TODO: webrtc广播后 ，若当前网络仅有当前节点，则 doc_content 为最新数据
     ydoc = new Y.Doc();
     provider = new WebrtcProvider(docroom, ydoc);
@@ -103,14 +97,17 @@
       [{ header: ["1", "2", "3", false] }],
       ["bold", "italic", "underline", "link"],
       ["repl"], // repl button
+      ["save"], // save button
     ];
 
     // @ts-ignore
     const icons = Quill.import("ui/icons");
     icons["repl"] =
       '<svg data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>';
-
-    // @ts-ignore
+    icons["save"] =
+    '<?xml version="1.0" encoding="UTF-8" standalone="no"?> <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 64 64"><path fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="4" d="M58,58H12L6,52V8A2,2,0,0,1,8,6H56a2,2,0,0,1,2,2Z"/><rect width="36" height="24" x="14" y="6" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="4"/><rect width="24" height="16" x="18" y="42" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="4"/><line x1="26" x2="26" y1="48" y2="58" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="4"/></svg>';
+    
+      // @ts-ignore
     quill = new Quill(editorElement, {
       modules: {
         cursors: true,
@@ -127,6 +124,13 @@
                 console.log("request error:", error);
               }
             },
+            async save(){
+              try {
+                saveHandler();
+              } catch (error) {
+                console.log("request error:", error);
+              }
+            },
           },
         },
         history: {
@@ -139,27 +143,37 @@
 
     binding = new QuillBinding(type, quill, provider.awareness);
 
-    // All of our network providers implement the awareness crdt
-    // const awareness = provider.awareness;
+    // 如果没人在房间里，则quill内容为空，从后端获取doc content
+    // 有人在房间里，则quill内容不为空，无需获取doc content
+    load_doc();
 
-    // awareness.on("change", (changes) => {
-    //   const states = Array.from(awareness.getStates().values());
-    //   replRequest(quill.getText());
-    // });
-
-    // // You can think of your own awareness information as a key-value store.
-    // // We update our "user" field to propagate relevant user information.
-    // awareness.setLocalStateField("user", {
-    //   // Define a print name that should be displayed
-    //   name: "Emmanuelle Charpentier",
-    //   // Define a color that should be associated to the user:
-    //   color: "#ffb61e", // should be a hex color
-    // });
+    return () => {
+      // 在组件销毁时移除事件监听器
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   });
 
-  onDestroy(() => {
-    nodeLeave();
-  });
+  function load_doc() {
+    const text = quill.getText();
+    get_doc_content();
+    if (text.size > 0) {
+      // new doc content in quill
+    } else {
+      // new doc content in DB
+      get_doc_content();
+    }
+  }
+
+  function get_doc_content() {
+    axios
+      .get("http://localhost:4000/api/item/" + id)
+      .then(function (response) {
+        quill.setText(response["data"]["doc_content"]);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 </script>
 
 <main>
